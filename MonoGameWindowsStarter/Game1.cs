@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoGameWindowsStarter
 {
@@ -11,6 +13,8 @@ namespace MonoGameWindowsStarter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteSheet sheet;
+        Player monster;
 
         public Game1()
         {
@@ -27,6 +31,10 @@ namespace MonoGameWindowsStarter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            // Set up size
+            graphics.PreferredBackBufferWidth = 1042;
+            graphics.PreferredBackBufferHeight = 768;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -41,6 +49,13 @@ namespace MonoGameWindowsStarter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            // Load Sprite Sheet into object
+            var t = Content.Load<Texture2D>("spritesheet");
+            sheet = new SpriteSheet(t, 50, 50, 0, 0);
+
+            // Create player and frames for animation
+            var playerFrames = from index in Enumerable.Range(0, 4) select sheet[index];
+            monster = new Player(playerFrames);
         }
 
         /// <summary>
@@ -63,6 +78,8 @@ namespace MonoGameWindowsStarter
                 Exit();
 
             // TODO: Add your update logic here
+            // Update Monster frames
+            monster.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -76,6 +93,10 @@ namespace MonoGameWindowsStarter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            // Draw the monster
+            spriteBatch.Begin();
+            monster.Draw(spriteBatch);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
