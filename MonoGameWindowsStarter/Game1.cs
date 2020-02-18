@@ -13,8 +13,13 @@ namespace MonoGameWindowsStarter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont font;
         SpriteSheet sheet;
         Player monster;
+        Sprite fruitSprite;
+        Fruit fruit;
+        int score = 0;
+        int lives = 3;
 
         public Game1()
         {
@@ -56,6 +61,13 @@ namespace MonoGameWindowsStarter
             // Create player and frames for animation
             var playerFrames = from index in Enumerable.Range(0, 4) select sheet[index];
             monster = new Player(playerFrames);
+
+            var fruitTexture = Content.Load<Texture2D>("fruit");
+            fruitSprite = new Sprite(new Rectangle(0, 0, 137, 131), fruitTexture);
+            fruit = new Fruit(fruitSprite);
+
+            // Load font
+            font = Content.Load<SpriteFont>("font");
         }
 
         /// <summary>
@@ -81,6 +93,22 @@ namespace MonoGameWindowsStarter
             // Update Monster frames
             monster.Update(gameTime);
 
+            // Update fruit frames
+            fruit.Update(gameTime);
+
+            if (monster.CollidedWithFruit(fruit))
+            {
+                fruit.spawnFruitToTop();
+                score++;
+            }
+
+            if (fruit.collidedWithBounds())
+            {
+                lives--;
+                if (lives <= 0) Exit();
+                fruit.spawnFruitToTop();
+            }
+
             base.Update(gameTime);
         }
 
@@ -93,9 +121,14 @@ namespace MonoGameWindowsStarter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            // Draw the monster
             spriteBatch.Begin();
+            // Draw UI
+            spriteBatch.DrawString(font, "Score: " + score, new Vector2(0, 0), Color.Black);
+            spriteBatch.DrawString(font, "Lives: " + lives, new Vector2(0, 50), Color.Black);
+            // Draw monster
             monster.Draw(spriteBatch);
+            // Draw fruit
+            fruit.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
