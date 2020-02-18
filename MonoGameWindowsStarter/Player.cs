@@ -44,7 +44,7 @@ namespace MonoGameWindowsStarter
         PlayerAnimState animationState = PlayerAnimState.Idle;
 
         // The player's speed
-        int speed = 3;
+        int speed = 4;
 
         // If the player is jumping
         bool jumping = false;
@@ -185,6 +185,14 @@ namespace MonoGameWindowsStarter
         public void Draw(SpriteBatch spriteBatch)
         {
             frames[currentFrame].Draw(spriteBatch, Position, color, 0, origin, 2, spriteEffects, 1);
+        }
+
+        public bool CollidedWithFruit(Fruit fruit)
+        {
+            return (Position.X < fruit.Position.X + fruit.sprite.Width
+                && Position.X + frames[currentFrame].Width > fruit.Position.X
+                && Position.Y < fruit.Position.Y + fruit.sprite.Height
+                && Position.Y + frames[currentFrame].Height > fruit.Position.Y);
         }
 
     }
