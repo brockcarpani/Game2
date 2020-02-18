@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameWindowsStarter
 {
@@ -72,13 +73,17 @@ namespace MonoGameWindowsStarter
         /// </summary>
         public Vector2 Position = new Vector2(500, 768);
 
+        // Sound effect for eating
+        SoundEffect eatSoundEffect;
+
         /// <summary>
         /// Constructs a new player
         /// </summary>
         /// <param name="frames">The sprite frames associated with the player</param>
-        public Player(IEnumerable<Sprite> frames)
+        public Player(IEnumerable<Sprite> frames, SoundEffect eatSound)
         {
             this.frames = frames.ToArray();
+            this.eatSoundEffect = eatSound;
             animationState = PlayerAnimState.WalkingLeft;
         }
 
@@ -195,5 +200,9 @@ namespace MonoGameWindowsStarter
                 && Position.Y + frames[currentFrame].Height > fruit.Position.Y);
         }
 
+        public void playEatSoundEffect()
+        {
+            eatSoundEffect.Play();
+        }
     }
 }

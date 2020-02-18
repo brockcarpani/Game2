@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameWindowsStarter
 {
@@ -60,11 +61,13 @@ namespace MonoGameWindowsStarter
 
             // Create player and frames for animation
             var playerFrames = from index in Enumerable.Range(0, 4) select sheet[index];
-            monster = new Player(playerFrames);
+            SoundEffect eat = Content.Load<SoundEffect>("eat");
+            monster = new Player(playerFrames, eat);
 
             var fruitTexture = Content.Load<Texture2D>("fruit");
             fruitSprite = new Sprite(new Rectangle(0, 0, 137, 131), fruitTexture);
-            fruit = new Fruit(fruitSprite);
+            SoundEffect fail = Content.Load<SoundEffect>("fail");
+            fruit = new Fruit(fruitSprite, fail);
 
             // Load font
             font = Content.Load<SpriteFont>("font");
@@ -100,6 +103,7 @@ namespace MonoGameWindowsStarter
             {
                 fruit.spawnFruitToTop();
                 score++;
+                monster.playEatSoundEffect();
             }
 
             if (fruit.collidedWithBounds())
@@ -107,6 +111,7 @@ namespace MonoGameWindowsStarter
                 lives--;
                 if (lives <= 0) Exit();
                 fruit.spawnFruitToTop();
+                fruit.playFailSoundEffect();
             }
 
             base.Update(gameTime);

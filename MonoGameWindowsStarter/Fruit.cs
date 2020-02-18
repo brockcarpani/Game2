@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameWindowsStarter
 {
@@ -22,13 +23,16 @@ namespace MonoGameWindowsStarter
         // Y velocity for fruit
         float yVelocity = 3;
 
+        SoundEffect failSoundEffect;
+
         /// <summary>
         /// Intitializes fruit to sprite texture
         /// </summary>
         /// <param name="sprite">Sprite created in game init</param>
-        public Fruit(Sprite sprite)
+        public Fruit(Sprite sprite, SoundEffect failSound)
         {
             this.sprite = sprite;
+            this.failSoundEffect = failSound;
 
             Position = new Vector2(
                 (float)rand.Next(0, 1042 - 50), // width of window/game - width of fruit
@@ -64,6 +68,11 @@ namespace MonoGameWindowsStarter
         {
             Position.Y = 50;
             Position.X = (float)rand.Next(0, 1042 - 50); // width of window/game - width of fruit
+        }
+
+        public void playFailSoundEffect()
+        {
+            failSoundEffect.Play();
         }
     }
 }
