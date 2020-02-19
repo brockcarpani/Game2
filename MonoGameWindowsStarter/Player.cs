@@ -45,7 +45,7 @@ namespace MonoGameWindowsStarter
         PlayerAnimState animationState = PlayerAnimState.Idle;
 
         // The player's speed
-        int speed = 4;
+        int speed = 5;
 
         // If the player is jumping
         bool jumping = false;
