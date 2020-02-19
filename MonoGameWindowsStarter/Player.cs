@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using System.Diagnostics;
 
 namespace MonoGameWindowsStarter
 {
@@ -22,6 +23,16 @@ namespace MonoGameWindowsStarter
         WalkingRight,
         FallingLeft,
         FallingRight
+    }
+
+    /// <summary>
+    /// An enumeration of possible player veritcal movement states
+    /// </summary>
+    enum VerticalMovementState
+    {
+        OnGround,
+        Jumping,
+        Falling
     }
 
     /// <summary>
@@ -43,6 +54,9 @@ namespace MonoGameWindowsStarter
 
         // The player's animation state
         PlayerAnimState animationState = PlayerAnimState.Idle;
+
+        // The player's vertical movement state
+        VerticalMovementState verticalState = VerticalMovementState.OnGround;
 
         // The player's speed
         int speed = 5;
@@ -76,6 +90,8 @@ namespace MonoGameWindowsStarter
         // Sound effect for eating
         SoundEffect eatSoundEffect;
 
+        public BoundingRectangle Bounds => new BoundingRectangle(Position - origin, 50, 50);
+
         /// <summary>
         /// Constructs a new player
         /// </summary>
@@ -96,50 +112,49 @@ namespace MonoGameWindowsStarter
             var keyboard = Keyboard.GetState();
 
             // Vertical movement
-            if (jumping)
+            switch (verticalState)
             {
-                jumpTimer += gameTime.ElapsedGameTime;
-                // Simple jumping with platformer physics
-                Position.Y -= (250 / (float)jumpTimer.TotalMilliseconds);
-                if (jumpTimer.TotalMilliseconds >= JUMP_TIME)
-                {
-                    jumping = false;
-                    falling = true;
-                }
+                case VerticalMovementState.OnGround:
+                    if (keyboard.IsKeyDown(Keys.Space))
+                    {
+                        verticalState = VerticalMovementState.Jumping;
+                        jumpTimer = new TimeSpan(0);
+                    }
+                    break;
+                case VerticalMovementState.Jumping:
+                    jumpTimer += gameTime.ElapsedGameTime;
+                    // Simple jumping with platformer physics
+                    Position.Y -= (250 / (float)jumpTimer.TotalMilliseconds);
+                    if (jumpTimer.TotalMilliseconds >= JUMP_TIME) verticalState = VerticalMovementState.Falling;
+                    break;
+                case VerticalMovementState.Falling:
+                    Position.Y += speed;
+                    // TODO: This needs to be replaced with collision logic
+                    if (Position.Y >= 768)
+                    {
+                        verticalState = VerticalMovementState.OnGround;
+                        Position.Y = 768;
+                    }
+                    break;
             }
-            if (falling)
-            {
-                Position.Y += speed;
-                // TODO: This needs to be replaced with collision logic
-                if (Position.Y > 768)
-                {
-                    Position.Y = 768;
-                    falling = false;
-                }
-            }
-            if (!jumping && !falling && keyboard.IsKeyDown(Keys.Space))
-            {
-                jumping = true;
-                jumpTimer = new TimeSpan(0);
-            }
+
 
             // Horizontal movement
             if (keyboard.IsKeyDown(Keys.Left))
             {
-                if (jumping || falling) animationState = PlayerAnimState.JumpingLeft;
-                else animationState = PlayerAnimState.WalkingLeft;
+                animationState = PlayerAnimState.WalkingLeft;
                 Position.X -= speed;
             }
             else if (keyboard.IsKeyDown(Keys.Right))
             {
-                if (jumping || falling) animationState = PlayerAnimState.JumpingRight;
-                else animationState = PlayerAnimState.WalkingRight;
+                animationState = PlayerAnimState.WalkingRight;
                 Position.X += speed;
             }
             else
             {
                 animationState = PlayerAnimState.Idle;
             }
+
 
             // Apply animations
             switch (animationState)
@@ -189,15 +204,35 @@ namespace MonoGameWindowsStarter
         /// <param name="spriteBatch">The SpriteBatch to use</param>
         public void Draw(SpriteBatch spriteBatch)
         {
+#if VISUAL_DEBUG
+            VisualDebugging.DrawRectangle(spriteBatch, Bounds, Color.Red);
+#endif
             frames[currentFrame].Draw(spriteBatch, Position, color, 0, origin, 2, spriteEffects, 1);
         }
 
         public bool CollidedWithFruit(Fruit fruit)
         {
             return (Position.X < fruit.Position.X + fruit.sprite.Width
-                && Position.X + frames[currentFrame].Width > fruit.Position.X
-                && Position.Y < fruit.Position.Y + fruit.sprite.Height
-                && Position.Y + frames[currentFrame].Height > fruit.Position.Y);
+                    && Position.X + Bounds.Width > fruit.Position.X
+                    && Position.Y < fruit.Position.Y + fruit.sprite.Height
+                    && Position.Y + Bounds.Height > fruit.Position.Y);
+        }
+
+        public void CheckForPlatformCollision(IEnumerable<IBoundable> platforms)
+        {
+            Debug.WriteLine($"Checking collisions against {platforms.Count()} platforms");
+            if (verticalState != VerticalMovementState.Jumping)
+            {
+                verticalState = VerticalMovementState.Falling;
+                foreach (Platform platform in platforms)
+                {
+                    if (Bounds.CollidesWith(platform.Bounds))
+                    {
+                        Position.Y = platform.Bounds.Y - 1;
+                        verticalState = VerticalMovementState.OnGround;
+                    }
+                }
+            }
         }
 
         public void playEatSoundEffect()

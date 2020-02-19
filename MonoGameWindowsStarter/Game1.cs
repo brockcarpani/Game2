@@ -24,11 +24,14 @@ namespace MonoGameWindowsStarter
         int score = 0;
         int lives = 3;
         Random rand = new Random();
+        List<Platform> platforms;
+        AxisList world;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            platforms = new List<Platform>();
         }
 
         /// <summary>
@@ -57,6 +60,10 @@ namespace MonoGameWindowsStarter
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+#if VISUAL_DEBUG
+            VisualDebugging.LoadContent(Content);
+#endif
+
             // TODO: use this.Content to load your game content here
             // Load Sprite Sheet into object
             var t = Content.Load<Texture2D>("spritesheet");
@@ -75,6 +82,20 @@ namespace MonoGameWindowsStarter
 
             // Load font
             font = Content.Load<SpriteFont>("font");
+
+            // Create the platforms
+            Texture2D pixel = Content.Load<Texture2D>("pixel");
+            Sprite pix = new Sprite(new Rectangle(0, 0, 100, 25), pixel);
+            platforms.Add(new Platform(new BoundingRectangle(80, 700, 200, 25), pix));
+            platforms.Add(new Platform(new BoundingRectangle(0, 768, 1024, 10), pix));
+            platforms.Add(new Platform(new BoundingRectangle(500, 720, 100, 25), pix));
+
+            // Add the platforms to the axis list
+            world = new AxisList();
+            foreach (Platform platform in platforms)
+            {
+                world.AddGameObject(platform);
+            }
         }
 
         /// <summary>
@@ -103,6 +124,10 @@ namespace MonoGameWindowsStarter
             // Update fruit frames
             fruit.Update(gameTime);
             fruit2.Update(gameTime);
+
+            // Check for platform collisions
+            var platformQuery = world.QueryRange(monster.Bounds.X, monster.Bounds.X + monster.Bounds.Width);
+            monster.CheckForPlatformCollision(platformQuery);
 
             if (monster.CollidedWithFruit(fruit))
             {
@@ -145,6 +170,7 @@ namespace MonoGameWindowsStarter
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+
             // Draw UI
             spriteBatch.DrawString(font, "Score: " + score, new Vector2(0, 0), Color.Black);
             spriteBatch.DrawString(font, "Lives: " + lives, new Vector2(0, 50), Color.Black);
@@ -153,6 +179,12 @@ namespace MonoGameWindowsStarter
             // Draw fruit
             fruit.Draw(spriteBatch);
             fruit2.Draw(spriteBatch);
+            // Draw the platforms 
+            platforms.ForEach(platform =>
+            {
+                platform.Draw(spriteBatch);
+            });
+
             spriteBatch.End();
 
             base.Draw(gameTime);
