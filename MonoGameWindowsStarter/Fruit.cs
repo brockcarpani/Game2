@@ -18,10 +18,10 @@ namespace MonoGameWindowsStarter
         public Vector2 Position;
 
         // Random for generating random x to spawn fruit
-        Random rand = new Random();
+        Random rand;
 
         // Y velocity for fruit
-        float yVelocity = 3;
+        float yVelocity = 2.5F;
 
         SoundEffect failSoundEffect;
 
@@ -29,10 +29,11 @@ namespace MonoGameWindowsStarter
         /// Intitializes fruit to sprite texture
         /// </summary>
         /// <param name="sprite">Sprite created in game init</param>
-        public Fruit(Sprite sprite, SoundEffect failSound)
+        public Fruit(Sprite sprite, SoundEffect failSound, Random random)
         {
             this.sprite = sprite;
             this.failSoundEffect = failSound;
+            this.rand = random;
 
             Position = new Vector2(
                 (float)rand.Next(0, 1042 - 50), // width of window/game - width of fruit

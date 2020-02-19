@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
+using System;
 
 namespace MonoGameWindowsStarter
 {
@@ -19,8 +20,10 @@ namespace MonoGameWindowsStarter
         Player monster;
         Sprite fruitSprite;
         Fruit fruit;
+        Fruit fruit2;
         int score = 0;
         int lives = 3;
+        Random rand = new Random();
 
         public Game1()
         {
@@ -67,7 +70,8 @@ namespace MonoGameWindowsStarter
             var fruitTexture = Content.Load<Texture2D>("fruit");
             fruitSprite = new Sprite(new Rectangle(0, 0, 137, 131), fruitTexture);
             SoundEffect fail = Content.Load<SoundEffect>("fail");
-            fruit = new Fruit(fruitSprite, fail);
+            fruit = new Fruit(fruitSprite, fail, rand);
+            fruit2 = new Fruit(fruitSprite, fail, rand);
 
             // Load font
             font = Content.Load<SpriteFont>("font");
@@ -98,10 +102,17 @@ namespace MonoGameWindowsStarter
 
             // Update fruit frames
             fruit.Update(gameTime);
+            fruit2.Update(gameTime);
 
             if (monster.CollidedWithFruit(fruit))
             {
                 fruit.spawnFruitToTop();
+                score++;
+                monster.playEatSoundEffect();
+            }
+            if (monster.CollidedWithFruit(fruit2))
+            {
+                fruit2.spawnFruitToTop();
                 score++;
                 monster.playEatSoundEffect();
             }
@@ -112,6 +123,13 @@ namespace MonoGameWindowsStarter
                 if (lives <= 0) Exit();
                 fruit.spawnFruitToTop();
                 fruit.playFailSoundEffect();
+            }
+            if (fruit2.collidedWithBounds())
+            {
+                lives--;
+                if (lives <= 0) Exit();
+                fruit2.spawnFruitToTop();
+                fruit2.playFailSoundEffect();
             }
 
             base.Update(gameTime);
@@ -134,6 +152,7 @@ namespace MonoGameWindowsStarter
             monster.Draw(spriteBatch);
             // Draw fruit
             fruit.Draw(spriteBatch);
+            fruit2.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
