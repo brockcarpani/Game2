@@ -195,6 +195,8 @@ namespace MonoGameWindowsStarter
                     break;
 
             }
+
+            changePlayerSide();
         }
 
         /// <summary>
@@ -232,6 +234,18 @@ namespace MonoGameWindowsStarter
                         verticalState = VerticalMovementState.OnGround;
                     }
                 }
+            }
+        }
+
+        public void changePlayerSide()
+        {
+            if (Position.X < 0)
+            {
+                Position.X = 1024 - 50; // width of screen/game - wisth of player
+            }
+            if (Position.X > 1024)
+            {
+                Position.X = 50;
             }
         }
 
