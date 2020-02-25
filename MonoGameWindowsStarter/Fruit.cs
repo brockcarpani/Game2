@@ -21,7 +21,7 @@ namespace MonoGameWindowsStarter
         Random rand;
 
         // Y velocity for fruit
-        float yVelocity = 2.5F;
+        float yVelocity = 1.5F;
 
         SoundEffect failSoundEffect;
 
@@ -36,7 +36,7 @@ namespace MonoGameWindowsStarter
             this.rand = random;
 
             Position = new Vector2(
-                (float)rand.Next(0, 1042 - 50), // width of window/game - width of fruit
+                (float)rand.Next(0, 2048 - 50), // width of window/game - width of fruit
                 50
                 );
             Position.Normalize();

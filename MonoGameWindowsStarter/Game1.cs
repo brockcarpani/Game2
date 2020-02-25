@@ -149,14 +149,14 @@ namespace MonoGameWindowsStarter
             if (fruit.collidedWithBounds())
             {
                 lives--;
-                //if (lives <= 0) Exit();
+                if (lives <= 0) Exit();
                 fruit.spawnFruitToTop();
                 fruit.playFailSoundEffect();
             }
             if (fruit2.collidedWithBounds())
             {
                 lives--;
-                //if (lives <= 0) Exit();
+                if (lives <= 0) Exit();
                 fruit2.spawnFruitToTop();
                 fruit2.playFailSoundEffect();
             }

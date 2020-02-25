@@ -59,7 +59,7 @@ namespace MonoGameWindowsStarter
         VerticalMovementState verticalState = VerticalMovementState.OnGround;
 
         // The player's speed
-        int speed = 5;
+        int speed = 6;
 
         // If the player is jumping
         bool jumping = false;
