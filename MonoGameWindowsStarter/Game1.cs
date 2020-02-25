@@ -87,8 +87,12 @@ namespace MonoGameWindowsStarter
             Texture2D pixel = Content.Load<Texture2D>("pixel");
             Sprite pix = new Sprite(new Rectangle(0, 0, 100, 25), pixel);
             platforms.Add(new Platform(new BoundingRectangle(80, 700, 200, 25), pix));
-            platforms.Add(new Platform(new BoundingRectangle(0, 768, 1024, 10), pix));
+            platforms.Add(new Platform(new BoundingRectangle(-520, 760, 3500, 10), pix));
             platforms.Add(new Platform(new BoundingRectangle(500, 720, 100, 25), pix));
+            platforms.Add(new Platform(new BoundingRectangle(800, 720, 100, 25), pix));
+            platforms.Add(new Platform(new BoundingRectangle(1300, 710, 100, 25), pix));
+            platforms.Add(new Platform(new BoundingRectangle(1700, 720, 100, 25), pix));
+            platforms.Add(new Platform(new BoundingRectangle(2000, 740, 100, 25), pix));
 
             // Add the platforms to the axis list
             world = new AxisList();
@@ -145,14 +149,14 @@ namespace MonoGameWindowsStarter
             if (fruit.collidedWithBounds())
             {
                 lives--;
-                if (lives <= 0) Exit();
+                //if (lives <= 0) Exit();
                 fruit.spawnFruitToTop();
                 fruit.playFailSoundEffect();
             }
             if (fruit2.collidedWithBounds())
             {
                 lives--;
-                if (lives <= 0) Exit();
+                //if (lives <= 0) Exit();
                 fruit2.spawnFruitToTop();
                 fruit2.playFailSoundEffect();
             }
@@ -169,7 +173,10 @@ namespace MonoGameWindowsStarter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            // Calculate and apply the world/view transform
+            var offset = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, monster.Position.Y) - monster.Position;
+            var t = Matrix.CreateTranslation(offset.X, offset.Y, 0);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, t);
 
             // Draw UI
             spriteBatch.DrawString(font, "Score: " + score, new Vector2(0, 0), Color.Black);

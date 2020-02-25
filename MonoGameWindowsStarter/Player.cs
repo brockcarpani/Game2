@@ -80,7 +80,7 @@ namespace MonoGameWindowsStarter
         Color color = Color.White;
 
         // The origin of the sprite (centered on its feet)
-        Vector2 origin = new Vector2(25, 50);
+        Vector2 origin = new Vector2(25, 40);
 
         /// <summary>
         /// Gets and sets the position of the player on-screen
@@ -196,7 +196,7 @@ namespace MonoGameWindowsStarter
 
             }
 
-            changePlayerSide();
+            keepPlayerBounds();
         }
 
         /// <summary>
@@ -237,15 +237,15 @@ namespace MonoGameWindowsStarter
             }
         }
 
-        public void changePlayerSide()
+        public void keepPlayerBounds()
         {
             if (Position.X < 0)
             {
-                Position.X = 1024 - 50; // width of screen/game - wisth of player
+                Position.X = 0; // width of screen/game - wisth of player
             }
-            if (Position.X > 1024)
+            if (Position.X > 2048)
             {
-                Position.X = 50;
+                Position.X = 2048;
             }
         }
 
