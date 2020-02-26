@@ -68,7 +68,7 @@ namespace MonoGameWindowsStarter
         public void spawnFruitToTop()
         {
             Position.Y = 50;
-            Position.X = (float)rand.Next(0, 1042 - 50); // width of window/game - width of fruit
+            Position.X = (float)rand.Next(0, 2048 - 50); // width of window/game - width of fruit
         }
 
         public void playFailSoundEffect()
