@@ -179,8 +179,8 @@ namespace MonoGameWindowsStarter
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, t);
 
             // Draw UI
-            spriteBatch.DrawString(font, "Score: " + score, new Vector2(0, 0), Color.Black);
-            spriteBatch.DrawString(font, "Lives: " + lives, new Vector2(0, 50), Color.Black);
+            spriteBatch.DrawString(font, "Score: " + score, new Vector2(monster.Position.X - 500, 0), Color.Black);
+            spriteBatch.DrawString(font, "Lives: " + lives, new Vector2(monster.Position.X - 500 , 50), Color.Black);
             // Draw monster
             monster.Draw(spriteBatch);
             // Draw fruit
