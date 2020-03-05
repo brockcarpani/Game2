@@ -13,7 +13,7 @@ namespace GameContentExtension
     /// This class will be instantiated by the XNA Framework Content Pipeline
     /// to apply custom processing to tileset data 
     /// </summary>
-    [ContentProcessor(DisplayName = "Tileset Processor - Tiled")]
+    [ContentProcessor(DisplayName = "TXT Processor - Positions")]
     public class TextProcessor : ContentProcessor<TInput, TOutput>
     {
         /// <summary>
