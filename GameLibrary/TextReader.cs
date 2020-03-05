@@ -16,9 +16,9 @@ namespace GameLibrary
             int PositionCount = input.ReadInt32();
 
             List<Vector2> vectorList = new List<Vector2>();
-            for (int i = 0; i < PositionCount * 2; i ++)
+            for (int i = 0; i < PositionCount; i ++)
             {
-                vectorList.Add(new Vector2(input.ReadInt32(), input.ReadInt32()));
+                vectorList.Add(new Vector2((float)input.ReadInt32(), (float)input.ReadInt32()));
             }
 
             // Construct and return the text

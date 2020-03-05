@@ -34,8 +34,8 @@ namespace GameContentExtension
             // Write all positions - X then Y
             foreach (Vector2 v in value.Positions)
             {
-                output.Write(v.X);
-                output.Write(v.Y);
+                output.Write((int)v.X);
+                output.Write((int)v.Y);
             }
 
         }
@@ -47,7 +47,7 @@ namespace GameContentExtension
         /// <returns></returns>
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "GameLibrary.TextReader, GameLibrary";
+            return "GameLibrary.TextReader, PlatformLibrary";
         }
     }
 }
