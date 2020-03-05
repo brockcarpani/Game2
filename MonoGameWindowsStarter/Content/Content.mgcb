@@ -10,6 +10,8 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\GameContentExtension\bin\Debug\PlatformerContentExtension.dll
+/reference:..\..\GameContentExtension\bin\Debug\PlatformLibrary.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -67,4 +69,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:pixel.png
+
+#begin Positions.txt
+/importer:TextImporter
+/processor:TextProcessor
+/build:Positions.txt
 

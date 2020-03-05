@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Audio;
 using System;
+using GameLibrary;
 
 namespace MonoGameWindowsStarter
 {
@@ -26,6 +27,7 @@ namespace MonoGameWindowsStarter
         Random rand = new Random();
         List<Platform> platforms;
         AxisList world;
+        Text textPositions;
 
         public Game1()
         {
@@ -100,6 +102,10 @@ namespace MonoGameWindowsStarter
             {
                 world.AddGameObject(platform);
             }
+
+            // Load from text custom content pipeline
+            textPositions = Content.Load<Text>("Positions");
+            
         }
 
         /// <summary>
