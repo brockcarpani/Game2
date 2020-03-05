@@ -49,6 +49,7 @@
     <Compile Include="BoundingRectangle.cs" />
     <Compile Include="Fruit.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Heart.cs" />
     <Compile Include="IBoundable.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />

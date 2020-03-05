@@ -220,6 +220,14 @@ namespace MonoGameWindowsStarter
                     && Position.Y + Bounds.Height > fruit.Position.Y);
         }
 
+        public bool CollidedWithHeart(Heart heart)
+        {
+            return (Position.X < heart.Position.X + heart.sprite.Width
+                    && Position.X + Bounds.Width > heart.Position.X
+                    && Position.Y < heart.Position.Y + heart.sprite.Height
+                    && Position.Y + Bounds.Height > heart.Position.Y);
+        }
+
         public void CheckForPlatformCollision(IEnumerable<IBoundable> platforms)
         {
             Debug.WriteLine($"Checking collisions against {platforms.Count()} platforms");

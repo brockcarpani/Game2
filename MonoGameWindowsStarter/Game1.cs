@@ -28,6 +28,7 @@ namespace MonoGameWindowsStarter
         List<Platform> platforms;
         AxisList world;
         Text textPositions;
+        Heart heart;
 
         public Game1()
         {
@@ -105,6 +106,11 @@ namespace MonoGameWindowsStarter
 
             // Load from text custom content pipeline
             textPositions = Content.Load<Text>("Positions");
+
+            // Use those positions to init heart
+            var heartTexture = Content.Load<Texture2D>("heart");
+            Sprite heartSprite = new Sprite(new Rectangle(0, 0, 640, 640), heartTexture);
+            heart = new Heart(heartSprite, rand, textPositions.Positions);
             
         }
 
@@ -135,6 +141,8 @@ namespace MonoGameWindowsStarter
             fruit.Update(gameTime);
             fruit2.Update(gameTime);
 
+            heart.Update(gameTime);
+
             // Check for platform collisions
             var platformQuery = world.QueryRange(monster.Bounds.X, monster.Bounds.X + monster.Bounds.Width);
             monster.CheckForPlatformCollision(platformQuery);
@@ -150,6 +158,12 @@ namespace MonoGameWindowsStarter
                 fruit2.spawnFruitToTop();
                 score++;
                 monster.playEatSoundEffect();
+            }
+
+            if (monster.CollidedWithHeart(heart))
+            {
+                lives++;
+                heart.spawnNewHeart();
             }
 
             if (fruit.collidedWithBounds())
@@ -197,6 +211,9 @@ namespace MonoGameWindowsStarter
             {
                 platform.Draw(spriteBatch);
             });
+
+            // Draw hearts
+            heart.Draw(spriteBatch);
 
             spriteBatch.End();
 

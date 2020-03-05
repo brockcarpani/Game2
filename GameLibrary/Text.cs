@@ -13,7 +13,7 @@ namespace GameLibrary
     /// </summary>
     public class Text
     {
-        List<Vector2> Positions;
+        public List<Vector2> Positions;
 
         /// <summary>
         /// Constructs a new instance of Tileset
