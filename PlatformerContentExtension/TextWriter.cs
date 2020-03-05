@@ -28,6 +28,9 @@ namespace GameContentExtension
         /// <param name="value">The TilesetContent we are writing</param>
         protected override void Write(ContentWriter output, TWrite value)
         {
+            // Write count
+            output.Write(value.PositionCount);
+
             // Write all positions - X then Y
             foreach (Vector2 v in value.Positions)
             {

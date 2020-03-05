@@ -49,9 +49,9 @@
     <Compile Include="TextWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlatformLibrary\PlatformLibrary.csproj">
+    <ProjectReference Include="..\PlatformLibrary\GameLibrary.csproj">
       <Project>{5205da9a-b8c2-44f1-a6ae-4eec30983b4f}</Project>
-      <Name>PlatformLibrary</Name>
+      <Name>GameLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
