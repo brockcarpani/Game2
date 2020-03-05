@@ -49,7 +49,7 @@
     <Compile Include="TextWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PlatformLibrary\GameLibrary.csproj">
+    <ProjectReference Include="..\GameLibrary\GameLibrary.csproj">
       <Project>{5205da9a-b8c2-44f1-a6ae-4eec30983b4f}</Project>
       <Name>GameLibrary</Name>
     </ProjectReference>
