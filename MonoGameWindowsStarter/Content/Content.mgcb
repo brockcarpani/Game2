@@ -70,6 +70,18 @@
 /processorParam:TextureFormat=Color
 /build:mon1_sprite.png;spritesheet.png
 
+#begin Particle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Particle.png
+
 #begin pixel.png
 /importer:TextureImporter
 /processor:TextureProcessor
