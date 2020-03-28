@@ -29,6 +29,9 @@ namespace MonoGameWindowsStarter
         AxisList world;
         Text textPositions;
         Heart heart;
+        ParticleSystem particleSystem;
+        Texture2D particleTexture;
+        Vector2 offset;
 
         public Game1()
         {
@@ -111,7 +114,13 @@ namespace MonoGameWindowsStarter
             var heartTexture = Content.Load<Texture2D>("heart");
             Sprite heartSprite = new Sprite(new Rectangle(0, 0, 640, 640), heartTexture);
             heart = new Heart(heartSprite, rand, textPositions.Positions);
-            
+
+            // TODO: use this.Content to load your game content here
+            particleTexture = Content.Load<Texture2D>("Particle");
+            particleSystem = new ParticleSystem(this.GraphicsDevice, 1000, particleTexture);
+            particleSystem.Emitter = new Vector2(monster.Position.X, monster.Bounds.Y - monster.Bounds.Height);
+            particleSystem.SpawnPerFrame = 4;
+
         }
 
         /// <summary>
@@ -181,6 +190,10 @@ namespace MonoGameWindowsStarter
                 fruit2.playFailSoundEffect();
             }
 
+            // TODO: Add your update logic here
+            particleSystem.Update(gameTime);
+            particleSystem.Emitter = new Vector2(monster.Bounds.X + offset.X + monster.Bounds.Width / 2, monster.Bounds.Y + monster.Bounds.Height / 2);
+
             base.Update(gameTime);
         }
 
@@ -194,7 +207,7 @@ namespace MonoGameWindowsStarter
 
             // TODO: Add your drawing code here
             // Calculate and apply the world/view transform
-            var offset = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, monster.Position.Y) - monster.Position;
+            offset = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, monster.Position.Y) - monster.Position;
             var t = Matrix.CreateTranslation(offset.X, offset.Y, 0);
             spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, t);
 
@@ -216,6 +229,9 @@ namespace MonoGameWindowsStarter
             heart.Draw(spriteBatch);
 
             spriteBatch.End();
+
+            // TODO: Add your drawing code here
+            particleSystem.Draw();
 
             base.Draw(gameTime);
         }
