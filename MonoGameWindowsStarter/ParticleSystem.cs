@@ -9,10 +9,34 @@ using Microsoft.Xna.Framework;
 namespace MonoGameWindowsStarter
 {
     /// <summary>
+    /// A delegate for spawning particles
+    /// </summary>
+    /// <param name="particle">The particle to spawn</param>
+    public delegate void ParticleSpawner(ref Particle particle);
+
+    /// <summary>
+    /// A delegate for updating particles
+    /// </summary>
+    /// <param name="deltaT">The seconds elapsed between frames</param>
+    /// <param name="particle">The particle to update</param>
+    public delegate void ParticleUpdater(float deltaT, ref Particle particle);
+
+    /// <summary>
     /// A class representing a particle system 
     /// </summary>
     public class ParticleSystem
     {
+        /// <summary>
+        /// Holds a delegate to use when spawning a new particle
+        /// </summary>
+        public ParticleSpawner SpawnParticle { get; set; }
+
+        /// <summary>
+        /// Holds a delegate to use when updating a particle 
+        /// </summary>
+        /// <param name="particle"></param>
+        public ParticleUpdater UpdateParticle { get; set; }
+
         /// <summary>
         /// The collection of particles 
         /// </summary>
@@ -68,33 +92,29 @@ namespace MonoGameWindowsStarter
         /// <param name="gameTime">A structure representing time in the game</param>
         public void Update(GameTime gameTime)
         {
+            // Make sure our delegate properties are set
+            if (SpawnParticle == null || UpdateParticle == null) return;
+
             // Part 1: Spawn new particles 
             for (int i = 0; i < SpawnPerFrame; i++)
             {
                 // Create the particle
-                particles[nextIndex].Position = Emitter;
-                particles[nextIndex].Velocity = 100 * new Vector2((float)random.NextDouble(), (float)random.NextDouble());
-                particles[nextIndex].Acceleration = 0.1f * new Vector2((float)random.NextDouble(), (float)random.NextDouble());
-                particles[nextIndex].Color = Color.White;
-                particles[nextIndex].Scale = 1f;
-                particles[nextIndex].Life = 3.0f;
+                SpawnParticle(ref particles[nextIndex]);
 
                 // Advance the index 
                 nextIndex++;
                 if (nextIndex > particles.Length - 1) nextIndex = 0;
             }
 
-            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // Part 2: Update Particles
+            float deltaT = (float)gameTime.ElapsedGameTime.TotalSeconds;
             for (int i = 0; i < particles.Length; i++)
             {
                 // Skip any "dead" particles
                 if (particles[i].Life <= 0) continue;
 
-                // Update the individual particles
-                particles[i].Velocity += deltaT * particles[i].Acceleration;
-                particles[i].Position += deltaT * particles[i].Velocity;
-                particles[i].Life -= deltaT;
+                // Update the individual particle
+                UpdateParticle(deltaT, ref particles[i]);
             }
         }
 

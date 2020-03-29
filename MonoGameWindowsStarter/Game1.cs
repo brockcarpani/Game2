@@ -31,7 +31,10 @@ namespace MonoGameWindowsStarter
         Heart heart;
         ParticleSystem particleSystem;
         Texture2D particleTexture;
+        ParticleSystem heartParticleSystem;
+        ParticleSystem fruitParticleSystem;
         Vector2 offset;
+        Texture2D heartTexture;
 
         public Game1()
         {
@@ -111,15 +114,14 @@ namespace MonoGameWindowsStarter
             textPositions = Content.Load<Text>("Positions");
 
             // Use those positions to init heart
-            var heartTexture = Content.Load<Texture2D>("heart");
+            heartTexture = Content.Load<Texture2D>("heart");
             Sprite heartSprite = new Sprite(new Rectangle(0, 0, 640, 640), heartTexture);
             heart = new Heart(heartSprite, rand, textPositions.Positions);
 
-            // TODO: use this.Content to load your game content here
-            particleTexture = Content.Load<Texture2D>("Particle");
-            particleSystem = new ParticleSystem(this.GraphicsDevice, 1000, particleTexture);
-            particleSystem.Emitter = new Vector2(monster.Position.X, monster.Bounds.Y - monster.Bounds.Height);
-            particleSystem.SpawnPerFrame = 4;
+            // Load particles
+            monsterParticleLoad();
+            heartParticleLoad();
+            fruitParticleLoad();
 
         }
 
@@ -193,6 +195,10 @@ namespace MonoGameWindowsStarter
             // TODO: Add your update logic here
             particleSystem.Update(gameTime);
             particleSystem.Emitter = new Vector2(monster.Bounds.X + offset.X + monster.Bounds.Width / 2, monster.Bounds.Y + monster.Bounds.Height / 2);
+            heartParticleSystem.Update(gameTime);
+            heartParticleSystem.Emitter = new Vector2(heart.Position.X + offset.X, heart.Position.Y);
+            fruitParticleSystem.Update(gameTime);
+            fruitParticleSystem.Emitter = new Vector2(fruit.Position.X + offset.X + 16, fruit.Position.Y);
 
             base.Update(gameTime);
         }
@@ -232,8 +238,100 @@ namespace MonoGameWindowsStarter
 
             // TODO: Add your drawing code here
             particleSystem.Draw();
+            heartParticleSystem.Draw();
+            fruitParticleSystem.Draw();
 
             base.Draw(gameTime);
+        }
+
+        // Load monster particles
+        public void monsterParticleLoad()
+        {
+            // use this.Content to load your game content here
+            particleTexture = Content.Load<Texture2D>("Particle");
+            particleSystem = new ParticleSystem(this.GraphicsDevice, 1000, particleTexture);
+            particleSystem.SpawnPerFrame = 4;
+            // Set the SpawnParticle method
+            particleSystem.SpawnParticle = (ref Particle particle) =>
+            {
+                particle.Position = new Vector2(monster.Bounds.X + offset.X + monster.Bounds.Width / 2, monster.Bounds.Y + monster.Bounds.Height / 2);
+                particle.Velocity = new Vector2(
+                    MathHelper.Lerp(-100, 100, (float)rand.NextDouble()), // X between -50 and 50
+                    MathHelper.Lerp(0, 100, (float)rand.NextDouble()) // Y between 0 and 100
+                    );
+                particle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
+                particle.Color = Color.White;
+                particle.Scale = 1f;
+                particle.Life = 1.0f;
+            };
+            // Set the UpdateParticle method
+            particleSystem.UpdateParticle = (float deltaT, ref Particle particle) =>
+            {
+                particle.Velocity += deltaT * particle.Acceleration;
+                particle.Position += deltaT * particle.Velocity;
+                particle.Scale -= deltaT;
+                particle.Life -= deltaT;
+            };
+        }
+
+        // Load heart particles
+        public void heartParticleLoad()
+        {
+            // use this.Content to load your game content here
+            var heartParticleTexture = Content.Load<Texture2D>("heart_texture");
+            heartParticleSystem = new ParticleSystem(this.GraphicsDevice, 1000, heartParticleTexture);
+            heartParticleSystem.SpawnPerFrame = 4;
+            // Set the SpawnParticle method
+            heartParticleSystem.SpawnParticle = (ref Particle heartParticle) =>
+            {
+                heartParticle.Position = new Vector2(heart.Position.X + offset.X + 25, heart.Position.Y + 9);
+                heartParticle.Velocity = new Vector2(
+                    MathHelper.Lerp(-100, 100, (float)rand.NextDouble()), // X between -50 and 50
+                    MathHelper.Lerp(-100, 100, (float)rand.NextDouble()) // Y between 0 and 100
+                    );
+                heartParticle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
+                heartParticle.Color = Color.White;
+                heartParticle.Scale = 1.0f;
+                heartParticle.Life = 1.0f;
+            };
+            // Set the UpdateParticle method
+            heartParticleSystem.UpdateParticle = (float heartDeltaT, ref Particle heartParticle) =>
+            {
+                heartParticle.Velocity += heartDeltaT * heartParticle.Acceleration;
+                heartParticle.Position += heartDeltaT * heartParticle.Velocity;
+                heartParticle.Scale -= heartDeltaT;
+                heartParticle.Life -= heartDeltaT;
+            };
+        }
+
+        // Load fruit particles
+        public void fruitParticleLoad()
+        {
+            // use this.Content to load your game content here
+            var fruitParticleTexture = Content.Load<Texture2D>("fruit_texture");
+            fruitParticleSystem = new ParticleSystem(this.GraphicsDevice, 1000, fruitParticleTexture);
+            fruitParticleSystem.SpawnPerFrame = 4;
+            // Set the SpawnParticle method
+            fruitParticleSystem.SpawnParticle = (ref Particle fruitParticle) =>
+            {
+                fruitParticle.Position = new Vector2(fruit.Position.X + offset.X + 25, fruit.Position.Y);
+                fruitParticle.Velocity = new Vector2(
+                    MathHelper.Lerp(-100, 100, (float)rand.NextDouble()), // X between -50 and 50
+                    MathHelper.Lerp(-200, 0, (float)rand.NextDouble()) // Y between 0 and 100
+                    );
+                fruitParticle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
+                fruitParticle.Color = Color.Purple;
+                fruitParticle.Scale = 1.0f;
+                fruitParticle.Life = 1.0f;
+            };
+            // Set the UpdateParticle method
+            fruitParticleSystem.UpdateParticle = (float fruitDeltaT, ref Particle fruitParticle) =>
+            {
+                fruitParticle.Velocity += fruitDeltaT * fruitParticle.Acceleration;
+                fruitParticle.Position += fruitDeltaT * fruitParticle.Velocity;
+                fruitParticle.Scale -= fruitDeltaT;
+                fruitParticle.Life -= fruitDeltaT;
+            };
         }
     }
 }
