@@ -33,6 +33,7 @@ namespace MonoGameWindowsStarter
         Texture2D particleTexture;
         ParticleSystem heartParticleSystem;
         ParticleSystem fruitParticleSystem;
+        ParticleSystem fruitParticleSystem2;
         Vector2 offset;
         Texture2D heartTexture;
 
@@ -199,6 +200,8 @@ namespace MonoGameWindowsStarter
             heartParticleSystem.Emitter = new Vector2(heart.Position.X + offset.X, heart.Position.Y);
             fruitParticleSystem.Update(gameTime);
             fruitParticleSystem.Emitter = new Vector2(fruit.Position.X + offset.X + 16, fruit.Position.Y);
+            fruitParticleSystem2.Update(gameTime);
+            fruitParticleSystem2.Emitter = new Vector2(fruit2.Position.X + offset.X + 16, fruit2.Position.Y);
 
             base.Update(gameTime);
         }
@@ -240,6 +243,7 @@ namespace MonoGameWindowsStarter
             particleSystem.Draw();
             heartParticleSystem.Draw();
             fruitParticleSystem.Draw();
+            fruitParticleSystem2.Draw();
 
             base.Draw(gameTime);
         }
@@ -291,7 +295,7 @@ namespace MonoGameWindowsStarter
                     );
                 heartParticle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
                 heartParticle.Color = Color.White;
-                heartParticle.Scale = 1.0f;
+                heartParticle.Scale = 1.5f;
                 heartParticle.Life = 1.0f;
             };
             // Set the UpdateParticle method
@@ -321,11 +325,35 @@ namespace MonoGameWindowsStarter
                     );
                 fruitParticle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
                 fruitParticle.Color = Color.Purple;
-                fruitParticle.Scale = 1.0f;
+                fruitParticle.Scale = 1.5f;
                 fruitParticle.Life = 1.0f;
             };
             // Set the UpdateParticle method
             fruitParticleSystem.UpdateParticle = (float fruitDeltaT, ref Particle fruitParticle) =>
+            {
+                fruitParticle.Velocity += fruitDeltaT * fruitParticle.Acceleration;
+                fruitParticle.Position += fruitDeltaT * fruitParticle.Velocity;
+                fruitParticle.Scale -= fruitDeltaT;
+                fruitParticle.Life -= fruitDeltaT;
+            };
+
+            fruitParticleSystem2 = new ParticleSystem(this.GraphicsDevice, 1000, fruitParticleTexture);
+            fruitParticleSystem2.SpawnPerFrame = 4;
+            // Set the SpawnParticle method
+            fruitParticleSystem2.SpawnParticle = (ref Particle fruitParticle) =>
+            {
+                fruitParticle.Position = new Vector2(fruit2.Position.X + offset.X + 25, fruit2.Position.Y);
+                fruitParticle.Velocity = new Vector2(
+                    MathHelper.Lerp(-100, 100, (float)rand.NextDouble()), // X between -50 and 50
+                    MathHelper.Lerp(-200, 0, (float)rand.NextDouble()) // Y between 0 and 100
+                    );
+                fruitParticle.Acceleration = 0.1f * new Vector2(0, (float)-rand.NextDouble());
+                fruitParticle.Color = Color.Purple;
+                fruitParticle.Scale = 1.5f;
+                fruitParticle.Life = 1.0f;
+            };
+            // Set the UpdateParticle method
+            fruitParticleSystem2.UpdateParticle = (float fruitDeltaT, ref Particle fruitParticle) =>
             {
                 fruitParticle.Velocity += fruitDeltaT * fruitParticle.Acceleration;
                 fruitParticle.Position += fruitDeltaT * fruitParticle.Velocity;
